@@ -50,7 +50,7 @@ body {
 }
 .hdr-title { font-size:16px; font-weight:800; letter-spacing:-0.02em; }
 .hdr-sub   { font-size:10px; color:var(--text2); font-family:var(--mono); margin-top:1px; }
-.hdr-right { margin-left:auto; display:flex; align-items:center; gap:8px; }
+.hdr-right { margin-left:auto; display:flex; align-items:center; gap:8px; flex-shrink:0; }
 .badge {
   font-family:var(--mono); font-size:10px;
   background:rgba(24,119,242,0.1); border:1px solid rgba(24,119,242,0.22);
@@ -60,10 +60,19 @@ body {
   background:var(--bg3); border:1px solid var(--bord2);
   color:var(--text2); border-radius:7px; padding:6px 12px;
   font-size:11px; font-family:var(--sans); font-weight:600;
-  cursor:pointer; transition:all .15s;
+  cursor:pointer; transition:all .15s; white-space:nowrap;
 }
 .btn-ref:hover { border-color:var(--accent); color:var(--text); }
 .btn-ref:disabled { opacity:.45; pointer-events:none; }
+
+@media(max-width:768px) {
+  .hdr { gap:8px; padding:0 12px; }
+  .logo { width:28px; height:28px; font-size:14px; flex-shrink:0; }
+  .hdr-title { font-size:13px; }
+  .hdr-sub   { font-size:9px; }
+  .badge     { display:none; }
+  .btn-ref   { padding:5px 8px; font-size:10px; }
+}
 
 /* ── COLUMNAS — posicionamiento absoluto simple ── */
 .col-list {
