@@ -340,10 +340,9 @@ async function fbList() {
   const res = await fetch(`${FB_BASE}/trials?key=${FB_KEY}&pageSize=300`);
   if (!res.ok) throw new Error('HTTP ' + res.status);
   const d = await res.json();
-  return (d.documents || []).map(doc => ({
-    id:   doc.name.split('/').pop(),
-    data: fsToObj(doc.fields)
-  }));
+  return (d.documents || [])
+    .map(doc => ({ id: doc.name.split('/').pop(), data: fsToObj(doc.fields) }))
+    .filter(doc => !doc.id.startsWith('_'));
 }
 
 async function fbSave(docId, cliente, email, activated) {
