@@ -345,19 +345,21 @@ async function fbList() {
     .filter(doc => !doc.id.startsWith('_'));
 }
 
-async function fbSave(docId, cliente, email, activated) {
+async function fbSave(docId, cliente, email, activated, notas) {
   const url = `${FB_BASE}/trials/${docId}` +
     `?key=${FB_KEY}` +
     `&updateMask.fieldPaths=Cliente` +
     `&updateMask.fieldPaths=${encodeURIComponent('`E-Mail`')}` +
-    `&updateMask.fieldPaths=activated`;
+    `&updateMask.fieldPaths=activated` +
+    `&updateMask.fieldPaths=notas`;
   const res = await fetch(url, {
     method: 'PATCH',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ fields: {
       'Cliente':   { stringValue:  cliente   },
       'E-Mail':    { stringValue:  email     },
-      'activated': { booleanValue: activated }
+      'activated': { booleanValue: activated },
+      'notas':     { stringValue:  notas     }
     }})
   });
   if (!res.ok) throw new Error('HTTP ' + res.status + ' — ' + await res.text());
@@ -499,6 +501,10 @@ function renderDetail(r) {
             <label class="elbl">E-Mail</label>
             <input class="einp" id="eEmail" type="email" placeholder="correo@ejemplo.com" value="${esc(data['E-Mail']||'')}"/>
           </div>
+          <div class="egrp">
+            <label class="elbl">Notas</label>
+            <textarea class="einp" id="eNotas" placeholder="Notas internas sobre este cliente..." rows="4" style="resize:vertical;line-height:1.6;font-size:12px;">${esc(data.notas||'')}</textarea>
+          </div>
         </div>
       </div>
 
@@ -539,13 +545,14 @@ async function save(id) {
   const msgEl=document.getElementById('smsg');
   const cliente=document.getElementById('eCliente').value.trim();
   const email=document.getElementById('eEmail').value.trim();
+  const notas=document.getElementById('eNotas').value.trim();
   const activated=document.getElementById('togA').classList.contains('active-on');
   btn.disabled=true; btn.textContent='Guardando...';
   msgEl.className='smsg';
   try {
-    await fbSave(id,cliente,email,activated);
+    await fbSave(id,cliente,email,activated,notas);
     const r=records.find(x=>x.id===id);
-    if(r){r.data.Cliente=cliente;r.data['E-Mail']=email;r.data.activated=activated;}
+    if(r){r.data.Cliente=cliente;r.data['E-Mail']=email;r.data.activated=activated;r.data.notas=notas;}
     renderList();
     renderDetail(records.find(x=>x.id===id));
     toast('Datos guardados correctamente','ok');
